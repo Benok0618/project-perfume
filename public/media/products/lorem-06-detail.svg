@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f0e8"/>
+      <stop offset="1" stop-color="#f0e1d2"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="32%" r="62%">
+      <stop offset="0" stop-color="#b58354" stop-opacity="0.15"/>
+      <stop offset="1" stop-color="#b58354" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0.2">
+      <stop offset="0" stop-color="rgba(255, 255, 255, 0.7)"/>
+      <stop offset="0.55" stop-color="rgba(219, 192, 164, 0.4)"/>
+      <stop offset="1" stop-color="rgba(255, 255, 255, 0.7)"/>
+    </linearGradient>
+    <linearGradient id="liquid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0b782"/>
+      <stop offset="1" stop-color="#b07c47"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0d8ae"/>
+      <stop offset="0.5" stop-color="#b58a55"/>
+      <stop offset="1" stop-color="#f0d8ae"/>
+    </linearGradient>
+    <radialGradient id="blob" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#b58354" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#b58354" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="42"/>
+    </filter>
+    <filter id="softer" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="70"/>
+    </filter>
+    <clipPath id="bottle">
+      <path d="M312 332 C312 312 330 302 350 302 H450 C470 302 488 312 488 332 V372 C508 394 520 428 520 468 V790 C520 812 504 826 482 826 H318 C296 826 280 812 280 790 V468 C280 428 292 394 312 372 Z"/>
+    </clipPath>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <rect width="800" height="1000" fill="url(#glow)"/>
+  <ellipse cx="640" cy="240" rx="300" ry="260" fill="url(#blob)" filter="url(#softer)"/>
+  <g transform="translate(-36 44) rotate(-4 400 500)">
+    <rect x="128" y="72" width="356" height="128" rx="8" fill="url(#metal)"/>
+    <rect x="128" y="176" width="356" height="14" fill="#000" opacity="0.28"/>
+    <rect x="148" y="90" width="18" height="94" fill="#fff" opacity="0.2"/>
+    <rect x="206" y="200" width="200" height="94" fill="url(#glass)" stroke="rgba(43, 33, 38, 0.2)" stroke-width="1.5"/>
+    <path d="M116 286 C116 264 136 252 158 252 H454 C476 252 496 264 496 286 V1080 H116 Z" fill="url(#glass)" stroke="rgba(43, 33, 38, 0.2)" stroke-width="1.5"/>
+    <g clip-path="url(#detailclip)">
+      <rect x="116" y="588" width="380" height="520" fill="url(#liquid)" opacity="0.6"/>
+      <rect x="116" y="586" width="380" height="3" fill="#fff" opacity="0.22"/>
+      <polygon points="150,330 240,300 320,1080 200,1080" fill="#fff" opacity="0.05"/>
+      <rect x="150" y="340" width="20" height="440" rx="10" fill="#fff" opacity="0.5"/>
+    </g>
+    <rect x="196" y="650" width="252" height="270" rx="4" fill="rgba(255, 255, 255, 0.62)"/>
+    <rect x="224" y="700" width="196" height="4" fill="#a06f42" opacity="0.85"/>
+    <rect x="224" y="722" width="120" height="3" fill="#a06f42" opacity="0.55"/>
+    <rect x="224" y="820" width="196" height="3" fill="#a06f42" opacity="0.3"/>
+    <rect x="224" y="846" width="84" height="3" fill="#a06f42" opacity="0.3"/>
+  </g>
+  <line x1="60" y1="980" x2="760" y2="120" stroke="#b58354" stroke-opacity="0.12" stroke-width="1"/>
+  <clipPath id="detailclip">
+    <path d="M116 286 C116 264 136 252 158 252 H454 C476 252 496 264 496 286 V1080 H116 Z"/>
+  </clipPath>
+</svg>

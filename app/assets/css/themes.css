@@ -1,0 +1,108 @@
+/*
+ * Audience theme tokens. Every visual value in the app must come from these
+ * variables so the men, women, and unisex themes stay interchangeable.
+ */
+html[data-theme] {
+  --ui-container: 88rem;
+  --ui-header-height: 4.5rem;
+  --ui-radius: var(--theme-radius);
+
+  --ui-bg: var(--theme-bg);
+  --ui-bg-muted: var(--theme-surface);
+  --ui-bg-elevated: var(--theme-surface-2);
+  --ui-bg-accented: var(--theme-surface-2);
+  --ui-bg-inverted: var(--theme-text);
+
+  --ui-text: var(--theme-text);
+  --ui-text-toned: var(--theme-muted);
+  --ui-text-muted: var(--theme-muted);
+  --ui-text-dimmed: color-mix(in oklab, var(--theme-muted) 68%, var(--theme-bg));
+  --ui-text-highlighted: var(--theme-text);
+  --ui-text-inverted: var(--theme-bg);
+
+  --ui-border: var(--theme-border);
+  --ui-border-muted: var(--theme-border);
+  --ui-border-accented: var(--theme-border-strong);
+  --ui-border-inverted: var(--theme-text);
+
+  --ui-primary: var(--theme-accent);
+}
+
+html[data-theme="unisex"] {
+  --theme-bg: #f5f0e6;
+  --theme-surface: #eee7d9;
+  --theme-surface-2: #e4ecdf;
+  --theme-text: #243230;
+  --theme-muted: #4f625f;
+  --theme-accent: #5c6e6c;
+  --theme-accent-hover: #4a5a58;
+  --theme-accent-soft: #dce6da;
+  --theme-accent-contrast: #ffffff;
+  --theme-highlight: #d2a95a;
+  --theme-accent-warm: #bb7154;
+  --theme-border: rgb(36 50 48 / 0.16);
+  --theme-border-strong: rgb(36 50 48 / 0.32);
+  --theme-font-heading: 'EB Garamond', 'Cormorant Garamond', Georgia, serif;
+  --theme-font-body: 'Public Sans', system-ui, sans-serif;
+  --theme-heading-weight: 600;
+  --theme-radius: 8px;
+  --theme-radius-sm: 4px;
+  --theme-shadow: 0 24px 60px -34px rgb(36 50 48 / 0.28);
+  --theme-ease: cubic-bezier(0.45, 0.05, 0.15, 1);
+  --theme-duration: 600ms;
+  --theme-image-filter: saturate(0.96) brightness(1.01);
+  --theme-texture: radial-gradient(120% 60% at 50% -10%, rgb(142 183 164 / 0.22), transparent 60%);
+  --ui-text-inverted: #ffffff;
+}
+
+html[data-theme="men"] {
+  --theme-bg: #0b0c0e;
+  --theme-surface: #121417;
+  --theme-surface-2: #191c20;
+  --theme-text: #e6e4df;
+  --theme-muted: #9aa0a7;
+  --theme-accent: #b07a42;
+  --theme-accent-hover: #c98f50;
+  --theme-accent-soft: #221a12;
+  --theme-accent-contrast: #0b0c0e;
+  --theme-highlight: #b07a42;
+  --theme-accent-warm: #c98f50;
+  --theme-border: rgb(230 228 223 / 0.15);
+  --theme-border-strong: rgb(230 228 223 / 0.32);
+  --theme-font-heading: 'Oswald', 'Arial Narrow', sans-serif;
+  --theme-font-body: 'Public Sans', system-ui, sans-serif;
+  --theme-heading-weight: 500;
+  --theme-radius: 2px;
+  --theme-radius-sm: 0;
+  --theme-shadow: 0 20px 44px -26px rgb(0 0 0 / 0.9);
+  --theme-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --theme-duration: 320ms;
+  --theme-image-filter: grayscale(0.2) contrast(1.18) brightness(0.9);
+  --theme-texture: linear-gradient(180deg, rgb(176 122 66 / 0.1), transparent 42%);
+}
+
+html[data-theme="women"] {
+  --theme-bg: #f5ede7;
+  --theme-surface: #fbf6f2;
+  --theme-surface-2: #fffdfb;
+  --theme-text: #2b2126;
+  --theme-muted: #6d5b64;
+  --theme-accent: #9c5560;
+  --theme-accent-hover: #85444f;
+  --theme-accent-soft: #f0dedb;
+  --theme-accent-contrast: #fdf8f5;
+  --theme-highlight: #b76e79;
+  --theme-accent-warm: #c08a7a;
+  --theme-border: rgb(43 33 38 / 0.16);
+  --theme-border-strong: rgb(43 33 38 / 0.32);
+  --theme-font-heading: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+  --theme-font-body: 'Public Sans', system-ui, sans-serif;
+  --theme-heading-weight: 500;
+  --theme-radius: 20px;
+  --theme-radius-sm: 12px;
+  --theme-shadow: 0 34px 70px -38px rgb(90 62 74 / 0.32);
+  --theme-ease: cubic-bezier(0.33, 0, 0.2, 1);
+  --theme-duration: 800ms;
+  --theme-image-filter: sepia(0.08) saturate(1.06) brightness(1.03);
+  --theme-texture: radial-gradient(100% 55% at 82% 0%, rgb(183 110 121 / 0.14), transparent 58%);
+}

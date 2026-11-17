@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c0b0a"/>
+      <stop offset="1" stop-color="#1a1410"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="32%" r="62%">
+      <stop offset="0" stop-color="#c98f50" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#c98f50" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0.2">
+      <stop offset="0" stop-color="rgba(86, 74, 62, 0.5)"/>
+      <stop offset="0.55" stop-color="rgba(18, 14, 11, 0.88)"/>
+      <stop offset="1" stop-color="rgba(86, 74, 62, 0.5)"/>
+    </linearGradient>
+    <linearGradient id="liquid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a8641f"/>
+      <stop offset="1" stop-color="#3a1f09"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e0b06c"/>
+      <stop offset="0.5" stop-color="#6b3f18"/>
+      <stop offset="1" stop-color="#e0b06c"/>
+    </linearGradient>
+    <radialGradient id="blob" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#c98f50" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#c98f50" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="42"/>
+    </filter>
+    <filter id="softer" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="70"/>
+    </filter>
+    <clipPath id="bottle">
+      <path d="M400 300 L512 352 L528 790 C528 810 514 824 494 824 H306 C286 824 272 810 272 790 L288 352 Z"/>
+    </clipPath>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <rect width="800" height="1000" fill="url(#glow)"/>
+  <circle cx="588" cy="286" r="286" fill="url(#blob)" filter="url(#softer)"/>
+  <ellipse cx="222" cy="742" rx="250" ry="190" fill="url(#blob)" filter="url(#soft)" opacity="0.72"/>
+  <g fill="none" stroke="#c98f50">
+    <circle cx="400" cy="470" r="236" stroke-opacity="0.16"/>
+    <circle cx="400" cy="470" r="168" stroke-opacity="0.1"/>
+    <line x1="164" y1="470" x2="636" y2="470" stroke-opacity="0.08"/>
+    <line x1="400" y1="234" x2="400" y2="706" stroke-opacity="0.08"/>
+  </g>
+  <g transform="translate(400 866) scale(0.62) translate(-400 -826)">
+    <path d="M400 300 L512 352 L528 790 C528 810 514 824 494 824 H306 C286 824 272 810 272 790 L288 352 Z" fill="url(#glass)" stroke="rgba(230, 228, 223, 0.3)" stroke-width="2"/>
+    <g clip-path="url(#bottle)">
+      <rect x="256" y="516" width="288" height="316" fill="url(#liquid)" opacity="0.6"/>
+      <rect x="256" y="514" width="288" height="3" fill="#fff" opacity="0.2"/>
+    </g>
+    <g>
+    <rect x="330" y="566" width="140" height="176" rx="2" fill="rgba(233, 230, 223, 0.09)"/>
+    <rect x="350" y="598" width="100" height="3" fill="#e0b06c" opacity="0.85"/>
+    <rect x="350" y="614" width="62" height="2" fill="#e0b06c" opacity="0.55"/>
+    <rect x="350" y="674" width="100" height="2" fill="#e0b06c" opacity="0.32"/>
+    <rect x="350" y="696" width="46" height="2" fill="#e0b06c" opacity="0.32"/>
+  </g>
+  </g>
+  <rect x="330" y="900" width="140" height="1" fill="#c98f50" opacity="0.42"/>
+  <circle cx="400" cy="900" r="3" fill="#c98f50" opacity="0.6"/>
+</svg>
