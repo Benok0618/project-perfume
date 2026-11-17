@@ -2,10 +2,36 @@ export const copy = {
   announcement: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   hero: {
     eyebrow: 'Lorem ipsum dolor',
-    title: 'Lorem ipsum dolor sit amet consectetur adipiscing',
+    titleLead: 'Lorem ipsum',
+    titleAccent: 'dolor sit amet',
+    subhead: 'Consectetur adipiscing elit, sed do eiusmod tempor.',
     body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.',
-    primaryCta: 'Shop the collection',
-    secondaryCta: 'Find your scent'
+    primaryCta: 'Add to bag',
+    secondaryCta: 'Explore collection',
+    quizCta: 'Find your scent',
+    scrollCue: 'Scroll',
+    spec: {
+      family: 'Scent family',
+      intensity: 'Intensity',
+      price: 'Price & size'
+    },
+    stages: [
+      { line: 'Lorem ipsum dolor sit amet.', note: 'Consectetur adipiscing elit, sed do eiusmod tempor.' },
+      { line: 'Integer posuere erat a ante.', note: 'Nulla vitae elit libero, a pharetra augue.' }
+    ],
+    revealEyebrow: 'Lorem ipsum dolor'
+  },
+  collection: {
+    eyebrow: 'Lorem ipsum dolor',
+    title: 'Lorem ipsum dolor sit amet consectetur',
+    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras mattis consectetur purus sit amet fermentum.',
+    cta: 'Shop the collection'
+  },
+  quizCta: {
+    eyebrow: 'Lorem ipsum dolor',
+    title: 'Lorem ipsum dolor sit amet consectetur',
+    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.',
+    cta: 'Find your scent'
   },
   notes: {
     intro: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero.',

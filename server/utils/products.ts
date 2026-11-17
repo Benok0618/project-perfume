@@ -25,9 +25,12 @@ function toProduct(row: ProductRow, sizes: ProductSize[]): Product {
   }
 }
 
-export function listProducts(): Product[] {
-  const rows = db.select().from(products).all()
-  const sizeRows = db.select().from(productSizes).all()
+export async function listProducts(): Promise<Product[]> {
+  const [rows, sizeRows] = await Promise.all([
+    db.select().from(products),
+    db.select().from(productSizes)
+  ])
+
   const grouped = new Map<number, ProductSize[]>()
 
   for (const size of sizeRows) {
@@ -39,6 +42,7 @@ export function listProducts(): Product[] {
   return rows.map(row => toProduct(row, (grouped.get(row.id) ?? []).sort((a, b) => a.sizeMl - b.sizeMl)))
 }
 
-export function findProduct(slug: string): Product | null {
-  return listProducts().find(product => product.slug === slug) ?? null
+export async function findProduct(slug: string): Promise<Product | null> {
+  const all = await listProducts()
+  return all.find(product => product.slug === slug) ?? null
 }

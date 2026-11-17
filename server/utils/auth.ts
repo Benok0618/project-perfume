@@ -22,7 +22,7 @@ export async function requireAdminUserId(event: H3Event) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
-  const user = db.select({ isAdmin: users.isAdmin }).from(users).where(eq(users.id, id)).get()
+  const [user] = await db.select({ isAdmin: users.isAdmin }).from(users).where(eq(users.id, id)).limit(1)
 
   if (!user) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })

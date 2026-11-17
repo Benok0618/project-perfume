@@ -27,7 +27,7 @@ function matchesAudience(product: Product, audience: Product['audience']) {
 
 export default defineEventHandler(async (event): Promise<ProductListResponse> => {
   const query = await getValidatedQuery(event, input => productQuerySchema.parse(input))
-  const all = listProducts()
+  const all = await listProducts()
   const prices = all.flatMap(product => product.sizes.map(size => size.priceCents))
   const priceRange = prices.length
     ? { min: Math.floor(Math.min(...prices) / 100), max: Math.ceil(Math.max(...prices) / 100) }

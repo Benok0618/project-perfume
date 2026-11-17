@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
   assertRateLimit(event, 'register', 10, 60 * 60 * 1000)
 
-  const existing = db.select({ id: users.id }).from(users).where(eq(users.email, input.email)).get()
+  const [existing] = await db.select({ id: users.id }).from(users).where(eq(users.email, input.email)).limit(1)
 
   if (existing) {
     throw createError({
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
   const passwordHash = await hashPassword(input.password)
 
-  const created = db.insert(users).values({
+  const [created] = await db.insert(users).values({
     email: input.email,
     name: input.name,
     passwordHash
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     email: users.email,
     name: users.name,
     isAdmin: users.isAdmin
-  }).get()
+  })
 
   if (!created) {
     throw createError({

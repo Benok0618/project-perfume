@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
   assertRateLimit(event, 'login', 10, 15 * 60 * 1000)
 
-  const user = db.select().from(users).where(eq(users.email, input.email)).get()
+  const [user] = await db.select().from(users).where(eq(users.email, input.email)).limit(1)
   const valid = user ? await verifyPassword(user.passwordHash, input.password) : false
 
   if (!user || !valid) {

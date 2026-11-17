@@ -52,6 +52,13 @@ html[data-theme="unisex"] {
   --theme-duration: 600ms;
   --theme-image-filter: saturate(0.96) brightness(1.01);
   --theme-texture: radial-gradient(120% 60% at 50% -10%, rgb(142 183 164 / 0.22), transparent 60%);
+  --theme-hero-ink: #f8f4ec;
+  --theme-hero-muted: rgb(248 244 236 / 0.76);
+  --theme-hero-line: rgb(248 244 236 / 0.3);
+  --theme-hero-panel: rgb(21 27 25 / 0.5);
+  --theme-hero-ground: #0b0c0e;
+  --theme-hero-scrim: linear-gradient(90deg, rgb(8 10 9 / 0.86) 0%, rgb(8 10 9 / 0.55) 44%, rgb(8 10 9 / 0.08) 78%), linear-gradient(0deg, rgb(8 10 9 / 0.72), transparent 46%);
+  --theme-hero-top-scrim: linear-gradient(180deg, rgb(8 10 9 / 0.66), transparent);
   --ui-text-inverted: #ffffff;
 }
 
@@ -79,6 +86,13 @@ html[data-theme="men"] {
   --theme-duration: 320ms;
   --theme-image-filter: grayscale(0.2) contrast(1.18) brightness(0.9);
   --theme-texture: linear-gradient(180deg, rgb(176 122 66 / 0.1), transparent 42%);
+  --theme-hero-ink: #f2efe8;
+  --theme-hero-muted: rgb(242 239 232 / 0.74);
+  --theme-hero-line: rgb(242 239 232 / 0.28);
+  --theme-hero-panel: rgb(9 10 11 / 0.52);
+  --theme-hero-ground: #060708;
+  --theme-hero-scrim: linear-gradient(90deg, rgb(5 6 7 / 0.88) 0%, rgb(5 6 7 / 0.56) 44%, rgb(5 6 7 / 0.08) 78%), linear-gradient(0deg, rgb(5 6 7 / 0.76), transparent 46%);
+  --theme-hero-top-scrim: linear-gradient(180deg, rgb(5 6 7 / 0.7), transparent);
 }
 
 html[data-theme="women"] {
@@ -105,4 +119,11 @@ html[data-theme="women"] {
   --theme-duration: 800ms;
   --theme-image-filter: sepia(0.08) saturate(1.06) brightness(1.03);
   --theme-texture: radial-gradient(100% 55% at 82% 0%, rgb(183 110 121 / 0.14), transparent 58%);
+  --theme-hero-ink: #fbf4ee;
+  --theme-hero-muted: rgb(251 244 238 / 0.78);
+  --theme-hero-line: rgb(251 244 238 / 0.3);
+  --theme-hero-panel: rgb(31 19 24 / 0.5);
+  --theme-hero-ground: #140c10;
+  --theme-hero-scrim: linear-gradient(90deg, rgb(20 12 16 / 0.87) 0%, rgb(20 12 16 / 0.55) 44%, rgb(20 12 16 / 0.08) 78%), linear-gradient(0deg, rgb(20 12 16 / 0.74), transparent 46%);
+  --theme-hero-top-scrim: linear-gradient(180deg, rgb(20 12 16 / 0.68), transparent);
 }

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Product } from '~~/shared/types'
-import { site } from '~/config/site'
 
 const route = useRoute()
 
@@ -21,20 +20,21 @@ if (error.value || !product.value) {
 
 const current = computed(() => product.value as Product)
 const image = computed(() => current.value.images[0] ?? '')
+const siteUrl = useSiteUrl()
 
 useSeoMeta({
   title: current.value.name,
   description: current.value.description,
   ogTitle: current.value.name,
   ogDescription: current.value.description,
-  ogImage: `${site.url}${image.value}`,
-  ogUrl: `${site.url}/product/${current.value.slug}`,
+  ogImage: `${siteUrl.value}${image.value}`,
+  ogUrl: `${siteUrl.value}/product/${current.value.slug}`,
   twitterCard: 'summary_large_image'
 })
 
 useHead({
   link: [
-    { rel: 'canonical', href: `${site.url}/product/${current.value.slug}` }
+    { rel: 'canonical', href: `${siteUrl.value}/product/${current.value.slug}` }
   ]
 })
 </script>

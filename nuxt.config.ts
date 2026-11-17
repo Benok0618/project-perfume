@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { site } from './app/config/site'
+
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
@@ -7,6 +9,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/image',
     '@nuxt/fonts',
+    '@nuxtjs/sitemap',
     'nuxt-auth-utils'
   ],
 
@@ -14,7 +17,16 @@ export default defineNuxtConfig({
     enabled: true
   },
 
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' }
+  },
+
   css: ['~/assets/css/main.css'],
+
+  site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL || site.url,
+    name: site.name
+  },
 
   ui: {
     fonts: false
@@ -22,8 +34,12 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     databaseUrl: '',
+    databaseAuthToken: '',
     adminEmail: '',
-    adminPassword: ''
+    adminPassword: '',
+    public: {
+      siteUrl: ''
+    }
   },
 
   compatibilityDate: '2026-06-30',

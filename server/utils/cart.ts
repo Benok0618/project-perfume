@@ -31,13 +31,15 @@ function normalizeItems(items: CartInputItem[]) {
   return [...merged.values()]
 }
 
-export function buildCartSummary(input: CartInputItem[]): CartSummary {
+export async function buildCartSummary(input: CartInputItem[]): Promise<CartSummary> {
   const items = normalizeItems(input)
   if (items.length === 0) return emptySummary()
 
   const productIds = [...new Set(items.map(item => item.productId))]
-  const productRows = db.select().from(products).where(inArray(products.id, productIds)).all()
-  const sizeRows = db.select().from(productSizes).where(inArray(productSizes.productId, productIds)).all()
+  const [productRows, sizeRows] = await Promise.all([
+    db.select().from(products).where(inArray(products.id, productIds)),
+    db.select().from(productSizes).where(inArray(productSizes.productId, productIds))
+  ])
 
   const productMap = new Map(productRows.map(row => [row.id, row]))
   const sizeMap = new Map(sizeRows.map(row => [`${row.productId}:${row.sizeMl}`, row]))
@@ -85,30 +87,34 @@ export function buildCartSummary(input: CartInputItem[]): CartSummary {
   }
 }
 
-function ensureCart(userId: number) {
-  const existing = db.select().from(carts).where(eq(carts.userId, userId)).get()
+async function ensureCart(userId: number) {
+  const [existing] = await db.select().from(carts).where(eq(carts.userId, userId)).limit(1)
   if (existing) return existing
 
-  const created = db.insert(carts).values({ userId }).returning().get()
+  await db.insert(carts).values({ userId }).onConflictDoNothing({ target: carts.userId })
+
+  const [created] = await db.select().from(carts).where(eq(carts.userId, userId)).limit(1)
+
   if (!created) {
     throw createError({ statusCode: 500, statusMessage: 'Could not create cart' })
   }
+
   return created
 }
 
-function readCartItems(cartId: number): CartInputItem[] {
+async function readCartItems(cartId: number): Promise<CartInputItem[]> {
   return db.select({
     productId: cartItems.productId,
     sizeMl: cartItems.sizeMl,
     quantity: cartItems.quantity
-  }).from(cartItems).where(eq(cartItems.cartId, cartId)).all()
+  }).from(cartItems).where(eq(cartItems.cartId, cartId))
 }
 
-function findSize(productId: number, sizeMl: number) {
-  const size = db.select().from(productSizes).where(and(
+async function findSize(productId: number, sizeMl: number) {
+  const [size] = await db.select().from(productSizes).where(and(
     eq(productSizes.productId, productId),
     eq(productSizes.sizeMl, sizeMl)
-  )).get()
+  )).limit(1)
 
   if (!size) {
     throw createError({ statusCode: 404, statusMessage: 'Product size not found' })
@@ -116,158 +122,157 @@ function findSize(productId: number, sizeMl: number) {
   return size
 }
 
-function requireStock(productId: number, sizeMl: number) {
-  const size = findSize(productId, sizeMl)
+async function requireStock(productId: number, sizeMl: number) {
+  const size = await findSize(productId, sizeMl)
   if (size.stock <= 0) {
     throw createError({ statusCode: 409, statusMessage: 'This size is out of stock' })
   }
   return size
 }
 
-function touchCart(cartId: number) {
-  db.update(carts).set({ updatedAt: new Date() }).where(eq(carts.id, cartId)).run()
+async function touchCart(cartId: number) {
+  await db.update(carts).set({ updatedAt: new Date() }).where(eq(carts.id, cartId))
 }
 
-export function getUserCartSummary(userId: number): CartSummary {
-  const cart = ensureCart(userId)
-  return buildCartSummary(readCartItems(cart.id))
+export async function getUserCartSummary(userId: number): Promise<CartSummary> {
+  const cart = await ensureCart(userId)
+  return buildCartSummary(await readCartItems(cart.id))
 }
 
-export function addUserCartItem(userId: number, input: CartInputItem): CartSummary {
-  const size = requireStock(input.productId, input.sizeMl)
-  const cart = ensureCart(userId)
+export async function addUserCartItem(userId: number, input: CartInputItem): Promise<CartSummary> {
+  const size = await requireStock(input.productId, input.sizeMl)
+  const cart = await ensureCart(userId)
 
-  db.transaction((tx) => {
-    const existing = tx.select().from(cartItems).where(and(
+  await db.transaction(async (tx) => {
+    const [existing] = await tx.select().from(cartItems).where(and(
       eq(cartItems.cartId, cart.id),
       eq(cartItems.productId, input.productId),
       eq(cartItems.sizeMl, input.sizeMl)
-    )).get()
+    )).limit(1)
 
     const quantity = Math.min(size.stock, MAX_CART_QUANTITY, (existing?.quantity ?? 0) + input.quantity)
 
     if (existing) {
-      tx.update(cartItems).set({ quantity }).where(eq(cartItems.id, existing.id)).run()
+      await tx.update(cartItems).set({ quantity }).where(eq(cartItems.id, existing.id))
     } else {
-      tx.insert(cartItems).values({
+      await tx.insert(cartItems).values({
         cartId: cart.id,
         productId: input.productId,
         sizeMl: input.sizeMl,
         quantity
-      }).run()
+      })
     }
 
-    tx.update(carts).set({ updatedAt: new Date() }).where(eq(carts.id, cart.id)).run()
+    await tx.update(carts).set({ updatedAt: new Date() }).where(eq(carts.id, cart.id))
   })
 
-  return buildCartSummary(readCartItems(cart.id))
+  return buildCartSummary(await readCartItems(cart.id))
 }
 
-export function updateUserCartItem(userId: number, input: {
+export async function updateUserCartItem(userId: number, input: {
   productId: number
   sizeMl: number
   quantity?: number
   newSizeMl?: number
-}): CartSummary {
-  const cart = ensureCart(userId)
-  const source = db.select().from(cartItems).where(and(
+}): Promise<CartSummary> {
+  const cart = await ensureCart(userId)
+  const [source] = await db.select().from(cartItems).where(and(
     eq(cartItems.cartId, cart.id),
     eq(cartItems.productId, input.productId),
     eq(cartItems.sizeMl, input.sizeMl)
-  )).get()
+  )).limit(1)
 
   if (!source) {
     throw createError({ statusCode: 404, statusMessage: 'Cart item not found' })
   }
 
   const targetSizeMl = input.newSizeMl ?? input.sizeMl
-  const targetSize = requireStock(input.productId, targetSizeMl)
+  const targetSize = await requireStock(input.productId, targetSizeMl)
   const requested = input.quantity ?? source.quantity
 
-  db.transaction((tx) => {
+  await db.transaction(async (tx) => {
     if (targetSizeMl === input.sizeMl) {
-      tx.update(cartItems)
+      await tx.update(cartItems)
         .set({ quantity: Math.min(requested, targetSize.stock, MAX_CART_QUANTITY) })
         .where(eq(cartItems.id, source.id))
-        .run()
     } else {
-      const target = tx.select().from(cartItems).where(and(
+      const [target] = await tx.select().from(cartItems).where(and(
         eq(cartItems.cartId, cart.id),
         eq(cartItems.productId, input.productId),
         eq(cartItems.sizeMl, targetSizeMl)
-      )).get()
+      )).limit(1)
 
       const quantity = Math.min(targetSize.stock, MAX_CART_QUANTITY, (target?.quantity ?? 0) + requested)
 
-      tx.delete(cartItems).where(eq(cartItems.id, source.id)).run()
+      await tx.delete(cartItems).where(eq(cartItems.id, source.id))
 
       if (target) {
-        tx.update(cartItems).set({ quantity }).where(eq(cartItems.id, target.id)).run()
+        await tx.update(cartItems).set({ quantity }).where(eq(cartItems.id, target.id))
       } else {
-        tx.insert(cartItems).values({
+        await tx.insert(cartItems).values({
           cartId: cart.id,
           productId: input.productId,
           sizeMl: targetSizeMl,
           quantity
-        }).run()
+        })
       }
     }
 
-    tx.update(carts).set({ updatedAt: new Date() }).where(eq(carts.id, cart.id)).run()
+    await tx.update(carts).set({ updatedAt: new Date() }).where(eq(carts.id, cart.id))
   })
 
-  return buildCartSummary(readCartItems(cart.id))
+  return buildCartSummary(await readCartItems(cart.id))
 }
 
-export function removeUserCartItem(userId: number, productId: number, sizeMl: number): CartSummary {
-  const cart = ensureCart(userId)
+export async function removeUserCartItem(userId: number, productId: number, sizeMl: number): Promise<CartSummary> {
+  const cart = await ensureCart(userId)
 
-  db.delete(cartItems).where(and(
+  await db.delete(cartItems).where(and(
     eq(cartItems.cartId, cart.id),
     eq(cartItems.productId, productId),
     eq(cartItems.sizeMl, sizeMl)
-  )).run()
+  ))
 
-  touchCart(cart.id)
+  await touchCart(cart.id)
 
-  return buildCartSummary(readCartItems(cart.id))
+  return buildCartSummary(await readCartItems(cart.id))
 }
 
-export function mergeUserCart(userId: number, items: CartInputItem[]): CartSummary {
-  const cart = ensureCart(userId)
+export async function mergeUserCart(userId: number, items: CartInputItem[]): Promise<CartSummary> {
+  const cart = await ensureCart(userId)
   const merged = normalizeItems(items)
 
-  db.transaction((tx) => {
+  await db.transaction(async (tx) => {
     for (const item of merged) {
-      const size = tx.select().from(productSizes).where(and(
+      const [size] = await tx.select().from(productSizes).where(and(
         eq(productSizes.productId, item.productId),
         eq(productSizes.sizeMl, item.sizeMl)
-      )).get()
+      )).limit(1)
 
       if (!size || size.stock <= 0) continue
 
-      const existing = tx.select().from(cartItems).where(and(
+      const [existing] = await tx.select().from(cartItems).where(and(
         eq(cartItems.cartId, cart.id),
         eq(cartItems.productId, item.productId),
         eq(cartItems.sizeMl, item.sizeMl)
-      )).get()
+      )).limit(1)
 
       const quantity = Math.min(size.stock, MAX_CART_QUANTITY, (existing?.quantity ?? 0) + item.quantity)
 
       if (existing) {
-        tx.update(cartItems).set({ quantity }).where(eq(cartItems.id, existing.id)).run()
+        await tx.update(cartItems).set({ quantity }).where(eq(cartItems.id, existing.id))
       } else {
-        tx.insert(cartItems).values({
+        await tx.insert(cartItems).values({
           cartId: cart.id,
           productId: item.productId,
           sizeMl: item.sizeMl,
           quantity
-        }).run()
+        })
       }
     }
 
-    tx.update(carts).set({ updatedAt: new Date() }).where(eq(carts.id, cart.id)).run()
+    await tx.update(carts).set({ updatedAt: new Date() }).where(eq(carts.id, cart.id))
   })
 
-  return buildCartSummary(readCartItems(cart.id))
+  return buildCartSummary(await readCartItems(cart.id))
 }

@@ -4,7 +4,7 @@ import type { Audience, Occasion, ScentFamily, Season } from '../../shared/types
 
 if (existsSync('.env')) process.loadEnvFile('.env')
 
-const { db, sqlite } = await import('./client')
+const { db } = await import('./client')
 const { products: productsTable, productSizes, users } = await import('./schema')
 
 interface SeedProduct {
@@ -242,11 +242,11 @@ const catalog: SeedProduct[] = [
   }
 ]
 
-const upsertCatalog = sqlite.transaction(() => {
+await db.transaction(async (tx) => {
   for (const item of catalog) {
     const { sizes: itemSizes, ...product } = item
 
-    db.insert(productsTable)
+    await tx.insert(productsTable)
       .values(product)
       .onConflictDoUpdate({
         target: productsTable.slug,
@@ -266,31 +266,27 @@ const upsertCatalog = sqlite.transaction(() => {
           isFeatured: product.isFeatured
         }
       })
-      .run()
 
-    const row = db
+    const [row] = await tx
       .select({ id: productsTable.id })
       .from(productsTable)
       .where(eq(productsTable.slug, product.slug))
-      .get()
+      .limit(1)
 
     if (!row) throw new Error(`Product missing after upsert: ${product.slug}`)
 
     for (const size of itemSizes) {
-      db.insert(productSizes)
+      await tx.insert(productSizes)
         .values({ productId: row.id, ...size })
         .onConflictDoUpdate({
           target: [productSizes.productId, productSizes.sizeMl],
           set: { priceCents: size.priceCents, stock: size.stock }
         })
-        .run()
     }
   }
 })
 
-upsertCatalog()
-
-const productCount = db.select().from(productsTable).all().length
+const productCount = (await db.select().from(productsTable)).length
 console.log(`Seeded ${productCount} products.`)
 
 const adminEmail = process.env.NUXT_ADMIN_EMAIL
@@ -301,13 +297,12 @@ if (adminEmail && adminPassword) {
   const { Scrypt } = await import('@adonisjs/hash/drivers/scrypt')
   const passwordHash = await new Hash(new Scrypt({})).make(adminPassword)
 
-  db.insert(users)
+  await db.insert(users)
     .values({ email: adminEmail, passwordHash, name: 'Admin', isAdmin: true })
     .onConflictDoUpdate({
       target: users.email,
       set: { passwordHash, isAdmin: true }
     })
-    .run()
 
   console.log(`Seeded admin user ${adminEmail}.`)
 } else {

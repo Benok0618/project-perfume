@@ -3,6 +3,7 @@ import { site } from '~/config/site'
 
 const cart = useCartStore()
 const { itemCount, hydrated, pulse } = storeToRefs(cart)
+const { overHero } = useHeroChrome()
 const { loggedIn, user } = useUserSession()
 const { logout } = useAuth()
 
@@ -12,6 +13,7 @@ const open = ref(false)
 const mounted = ref(false)
 const badgeRef = ref<HTMLElement | null>(null)
 const route = useRoute()
+const onHero = computed(() => route.path === '/' && overHero.value)
 
 onMounted(() => {
   mounted.value = true
@@ -42,13 +44,16 @@ async function signOut() {
 </script>
 
 <template>
-  <header class="sticky top-0 z-40 border-b border-default bg-default/85 backdrop-blur-md">
+  <header
+    class="sticky top-0 z-40 border-b transition-colors duration-500"
+    :class="onHero ? 'border-transparent bg-transparent' : 'border-default bg-default/85 backdrop-blur-md'"
+  >
     <div class="mx-auto flex h-[4.5rem] max-w-[88rem] items-center gap-8 px-6 lg:px-10">
       <NuxtLink
         to="/"
         class="shrink-0"
       >
-        <AppLogo />
+        <AppLogo :tone="onHero ? 'hero' : 'default'" />
       </NuxtLink>
 
       <nav
@@ -59,7 +64,8 @@ async function signOut() {
           v-for="item in site.nav"
           :key="item.to"
           :to="item.to"
-          class="text-sm text-muted transition-colors hover:text-default"
+          class="text-sm transition-colors"
+          :class="onHero ? 'text-[var(--theme-hero-muted)] hover:text-[var(--theme-hero-ink)]' : 'text-muted hover:text-default'"
         >
           {{ item.label }}
         </NuxtLink>
@@ -76,6 +82,7 @@ async function signOut() {
             color="neutral"
             icon="i-lucide-shopping-bag"
             aria-label="Open bag"
+            :class="onHero ? 'text-[var(--theme-hero-ink)] hover:bg-[var(--theme-hero-panel)]' : ''"
             @click="cart.openDrawer()"
           />
           <span
@@ -94,6 +101,7 @@ async function signOut() {
           :icon="loggedIn ? 'i-lucide-user-check' : 'i-lucide-user'"
           :aria-label="loggedIn ? 'Account and orders' : 'Sign in'"
           class="hidden sm:inline-flex"
+          :class="onHero ? 'text-[var(--theme-hero-ink)] hover:bg-[var(--theme-hero-panel)]' : ''"
         />
         <UButton
           variant="ghost"
@@ -101,6 +109,7 @@ async function signOut() {
           icon="i-lucide-menu"
           aria-label="Open menu"
           class="lg:hidden"
+          :class="onHero ? 'text-[var(--theme-hero-ink)] hover:bg-[var(--theme-hero-panel)]' : ''"
           @click="open = true"
         />
       </div>

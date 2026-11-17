@@ -66,10 +66,10 @@ export function quizScoreSnapshot(answers: Answers) {
   return { ...tally.families, intensityTarget: tally.intensity }
 }
 
-export function buildQuizResult(answers: Answers, audience: Audience): QuizResult {
+export async function buildQuizResult(answers: Answers, audience: Audience): Promise<QuizResult> {
   const tally = tallyAnswers(answers)
 
-  const matches: QuizMatch[] = listProducts()
+  const matches: QuizMatch[] = (await listProducts())
     .filter(product => matchesAudience(product.audience, audience))
     .filter(product => product.sizes.some(size => size.stock > 0))
     .map((product) => {

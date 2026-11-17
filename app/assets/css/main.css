@@ -121,6 +121,22 @@
   }
 }
 
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 320ms var(--theme-ease), transform 320ms var(--theme-ease);
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-active {
+  position: absolute;
+  inset: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .product-item {
     animation: none;
